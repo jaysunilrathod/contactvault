@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ContactVault</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0E1116; --panel:#171B23; --panel2:#1D222C; --line:#2A303B;
+  --gold:#D9A441; --gold-soft:#8A6B2E; --text:#ECE9E2; --muted:#8B8F99;
+  --danger:#E2574C; --ok:#5FAE8E;
+  color-scheme: dark;
+}
+*{box-sizing:border-box;}
+html{scroll-padding-top:env(safe-area-inset-top,0px);}
+body{
+  margin:0; background:var(--ink); color:var(--text);
+  font-family:'Inter',system-ui,sans-serif;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+  min-height:100vh;
+}
+h1,h2,h3{font-family:'Fraunces',Georgia,serif; font-weight:600; margin:0 0 .3em;}
+p{line-height:1.55; color:var(--muted); margin:.2em 0 1em;}
+a{color:var(--gold);}
+.wrap{max-width:1040px; margin:0 auto; padding:0 24px;}
+header.top{display:flex; align-items:center; justify-content:space-between; padding:18px 24px; padding-top:calc(18px + env(safe-area-inset-top,0px)); border-bottom:1px solid var(--line); position:sticky; top:0; background:var(--ink); z-index:5;}
+.brand{display:flex; align-items:center; gap:10px; font-family:'Fraunces',serif; font-size:1.2rem;}
+.brand .mark{width:26px; height:26px; border:1.5px solid var(--gold); border-radius:6px; display:flex; align-items:center; justify-content:center; color:var(--gold); font-size:.85rem;}
+nav.top-nav{display:flex; gap:18px; font-size:.92rem;}
+nav.top-nav button{background:none;border:0;color:var(--muted);cursor:pointer;font:inherit;}
+nav.top-nav button.active{color:var(--text);}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:11px 18px;border-radius:7px;border:1px solid var(--line);background:var(--panel2);color:var(--text);cursor:pointer;font:inherit;font-weight:500;font-size:.92rem;text-decoration:none;}
+.btn:hover{border-color:var(--gold-soft);}
+.btn.gold{background:var(--gold);color:#1a1405;border-color:var(--gold);font-weight:600;}
+.btn.gold:hover{filter:brightness(1.06);}
+.btn.danger{color:var(--danger);}
+.btn.ghost{background:none;}
+.btn.small{padding:7px 12px;font-size:.82rem;}
+section{display:none;}
+section.active{display:block;}
+.hero{padding:90px 0 70px; text-align:left; border-bottom:1px solid var(--line);}
+.hero h1{font-size:clamp(2.1rem,5vw,3.3rem); max-width:11ch; line-height:1.08;}
+.hero p{max-width:46ch; font-size:1.08rem;}
+.hero .ctas{display:flex; gap:12px; margin-top:28px; flex-wrap:wrap;}
+.features{display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:1px; background:var(--line); border:1px solid var(--line); margin:50px 0;}
+.features div{background:var(--ink); padding:22px; font-size:.9rem;}
+.features div b{display:block; color:var(--text); font-family:'Fraunces',serif; font-size:1rem; margin-bottom:6px;}
+.card{background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:28px; max-width:420px; margin:60px auto;}
+label{display:block; font-size:.8rem; color:var(--muted); margin:14px 0 5px;}
+input,select,textarea{width:100%; padding:10px 12px; background:var(--panel2); border:1px solid var(--line); border-radius:6px; color:var(--text); font:inherit; font-size:.95rem;}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--gold-soft); border-color:var(--gold);}
+.row2{display:grid; grid-template-columns:1fr 1fr; gap:14px;}
+.err{color:var(--danger); font-size:.85rem; min-height:1.2em; margin-top:8px;}
+.foot-link{text-align:center; margin-top:18px; font-size:.88rem; color:var(--muted);}
+.foot-link button{background:none;border:0;color:var(--gold);cursor:pointer;font:inherit;}
+.statgrid{display:grid; grid-template-columns:repeat(auto-fit,minmax(130px,1fr)); gap:1px; background:var(--line); border:1px solid var(--line); border-radius:10px; overflow:hidden; margin:24px 0 32px;}
+.stat{background:var(--panel); padding:18px;}
+.stat .n{font-family:'Fraunces',serif; font-size:1.8rem; display:block;}
+.stat .l{font-size:.78rem; color:var(--muted);}
+.dash-actions{display:flex; gap:10px; flex-wrap:wrap; margin-bottom:30px;}
+.searchbar{display:flex; gap:10px; margin-bottom:18px;}
+.searchbar input{flex:1;}
+table{width:100%; border-collapse:collapse; font-size:.9rem;}
+th,td{text-align:left; padding:12px 10px; border-bottom:1px solid var(--line);}
+th{color:var(--muted); font-weight:500; font-size:.78rem;}
+.empty{padding:40px 0; text-align:center; color:var(--muted);}
+.banner{display:flex; align-items:center; justify-content:space-between; padding:14px 18px; border-radius:8px; margin-bottom:20px; font-size:.9rem; flex-wrap:wrap; gap:8px;}
+.banner.emg{background:rgba(226,87,76,.1); border:1px solid var(--danger); color:#f2a9a2;}
+.banner.emg b{color:#fff;}
+.page-head{display:flex; align-items:baseline; justify-content:space-between; margin:34px 0 6px; flex-wrap:wrap; gap:10px;}
+.modalbg{position:fixed; inset:0; background:rgba(0,0,0,.6); display:none; align-items:center; justify-content:center; z-index:20; padding:20px;}
+.modalbg.show{display:flex;}
+.modal{background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:26px; max-width:440px; width:100%; max-height:86vh; overflow:auto;}
+.codebox{background:var(--panel2); border:1px dashed var(--gold-soft); padding:14px; border-radius:6px; font-family:monospace; font-size:1rem; letter-spacing:1px; color:var(--gold); text-align:center; margin:14px 0;}
+.sessrow{display:flex; justify-content:space-between; align-items:center; padding:14px 0; border-bottom:1px solid var(--line); gap:10px; flex-wrap:wrap;}
+.sessrow .d{font-size:.85rem; color:var(--muted);}
+.main-pad{padding:36px 0 80px;}
+.actions-cell{display:flex; gap:6px; flex-wrap:wrap;}
+@media (max-width:640px){ nav.top-nav{display:none;} .row2{grid-template-columns:1fr;} table{font-size:.82rem;} th:nth-child(3),td:nth-child(3){display:none;} }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="brand"><span class="mark">CV</span>ContactVault</div>
+  <nav class="top-nav" id="topNav"></nav>
+  <div id="headerRight"></div>
+</header>
+
+<section id="view-landing">
+  <div class="wrap hero">
+    <h1>Your contacts. Available anywhere.</h1>
+    <p>Securely reach your contacts from any borrowed device when your own phone is lost, dead, or unavailable — without ever signing into your Gmail or Apple ID on someone else's phone.</p>
+    <div class="ctas">
+      <button class="btn gold" onclick="go('register')">Get started</button>
+      <button class="btn" onclick="go('emergency')">Emergency access</button>
+    </div>
+  </div>
+  <div class="wrap">
+    <div class="features">
+      <div><b>Cloud sync</b>Contacts added or edited on your phone sync automatically — simulated here from this browser.</div>
+      <div><b>Deleted-contact history</b>Nothing vanishes immediately. Deleted contacts sit in history until you choose to purge them.</div>
+      <div><b>Emergency access</b>A short, countdown-limited session built for a stranger's device: view and call only.</div>
+      <div><b>No borrowed logins</b>You authenticate with ContactVault directly — never your Google or Apple account.</div>
+    </div>
+  </div>
+</section>
+
+<section id="view-register">
+  <div class="card">
+    <h2>Create your vault</h2>
+    <p>Takes under a minute.</p>
+    <label>Full name</label><input id="r-name">
+    <div class="row2">
+      <div><label>User ID</label><input id="r-uid" autocapitalize="off"></div>
+      <div><label>Mobile number</label><input id="r-mobile"></div>
+    </div>
+    <label>Password</label><input id="r-pass" type="password">
+    <label>Confirm password</label><input id="r-pass2" type="password">
+    <label>Date of birth <span style="opacity:.6">(recovery detail only, never used alone)</span></label><input id="r-dob" type="date">
+    <div class="err" id="r-err"></div>
+    <button class="btn gold" style="width:100%;margin-top:6px" onclick="doRegister()">Create account</button>
+    <div class="foot-link">Already have a vault? <button onclick="go('login')">Sign in</button></div>
+  </div>
+</section>
+
+<section id="view-login">
+  <div class="card">
+    <h2>Sign in</h2>
+    <label>User ID</label><input id="l-uid" autocapitalize="off">
+    <label>Password</label><input id="l-pass" type="password">
+    <div class="err" id="l-err"></div>
+    <button class="btn gold" style="width:100%;margin-top:6px" onclick="doLogin()">Sign in</button>
+    <div class="foot-link">Phone unavailable? <button onclick="go('emergency')">Use emergency access</button></div>
+    <div class="foot-link">New here? <button onclick="go('register')">Create a vault</button></div>
+  </div>
+</section>
+
+<section id="view-emergency">
+  <div class="card">
+    <h2>Emergency contact access</h2>
+    <p>For a temporary or borrowed device. Opens a limited, time-boxed session — view and call only.</p>
+    <label>User ID</label><input id="e-uid" autocapitalize="off">
+    <label>Password</label><input id="e-pass" type="password">
+    <label>Emergency recovery code</label><input id="e-code" placeholder="XXXX-XXXX-XXXX-XXXX">
+    <div class="err" id="e-err"></div>
+    <button class="btn gold" style="width:100%;margin-top:6px" onclick="doEmergencyLogin()">Access contacts</button>
+    <div class="foot-link"><button onclick="go('login')">Back to normal sign in</button></div>
+  </div>
+</section>
+
+<div class="main-pad" id="app-area" style="display:none">
+<div class="wrap">
+
+  <section id="view-dashboard">
+    <div id="emgBanner"></div>
+    <h2>Welcome, <span id="dashName"></span></h2>
+    <div class="statgrid">
+      <div class="stat"><span class="n" id="st-total">0</span><span class="l">Total contacts</span></div>
+      <div class="stat"><span class="n" id="st-active">0</span><span class="l">Active</span></div>
+      <div class="stat"><span class="n" id="st-deleted">0</span><span class="l">Deleted history</span></div>
+      <div class="stat"><span class="n" id="st-sync">—</span><span class="l">Last sync</span></div>
+    </div>
+    <div class="dash-actions">
+      <button class="btn gold" onclick="go('contacts')">Search contacts</button>
+      <button class="btn" onclick="go('deleted')">Deleted contacts</button>
+      <button class="btn" id="syncBtn" onclick="simulateSync()">Sync now</button>
+    </div>
+  </section>
+
+  <section id="view-contacts">
+    <div class="page-head"><h2>Contacts</h2><button class="btn gold small" id="addBtn" onclick="openContactModal()">Add contact</button></div>
+    <div class="searchbar"><input id="c-search" placeholder="Search name, phone, email, company" oninput="renderContacts()"></div>
+    <table><thead><tr><th>Name</th><th>Phone</th><th>Email</th><th></th></tr></thead><tbody id="contactsBody"></tbody></table>
+    <div class="empty" id="contactsEmpty" style="display:none">No contacts match.</div>
+  </section>
+
+  <section id="view-deleted">
+    <div class="page-head"><h2>Deleted contacts</h2></div>
+    <p>Deleted contacts are kept here until you restore or permanently remove them.</p>
+    <table><thead><tr><th>Name</th><th>Phone</th><th>Deleted on</th><th></th></tr></thead><tbody id="deletedBody"></tbody></table>
+    <div class="empty" id="deletedEmpty" style="display:none">Nothing here.</div>
+  </section>
+
+  <section id="view-security">
+    <h2>Security &amp; sessions</h2>
+    <div id="sessList"></div>
+    <div class="page-head"><h3>Recent activity</h3></div>
+    <div id="auditList" style="font-size:.85rem;color:var(--muted)"></div>
+  </section>
+
+</div>
+</div>
+
+<div class="modalbg" id="codeModal"><div class="modal">
+  <h3>Save your recovery code</h3>
+  <p>You'll need this — plus your password — for emergency access. It won't be shown again.</p>
+  <div class="codebox" id="codeDisplay"></div>
+  <button class="btn gold" style="width:100%" onclick="closeCodeModal()">I've saved it — continue</button>
+</div></div>
+
+<div class="modalbg" id="contactModal"><div class="modal">
+  <h3 id="cm-title">Add contact</h3>
+  <input type="hidden" id="cm-id">
+  <label>Name</label><input id="cm-name">
+  <div class="row2">
+    <div><label>Phone</label><input id="cm-phone"></div>
+    <div><label>Email</label><input id="cm-email"></div>
+  </div>
+  <label>Company</label><input id="cm-company">
+  <div class="err" id="cm-err"></div>
+  <div style="display:flex;gap:10px;margin-top:18px">
+    <button class="btn gold" style="flex:1" onclick="saveContact()">Save</button>
+    <button class="btn ghost" onclick="closeContactModal()">Cancel</button>
+  </div>
+</div></div>
+
+<div class="modalbg" id="viewModal"><div class="modal">
+  <h3 id="vm-name"></h3>
+  <p id="vm-detail" style="color:var(--text)"></p>
+  <div style="display:flex;gap:10px">
+    <a class="btn gold" id="vm-call">Call</a>
+    <button class="btn" onclick="copyNumber()">Copy number</button>
+    <button class="btn ghost" onclick="closeViewModal()">Close</button>
+  </div>
+</div></div>
+
+<script>
+const DB_KEY='cv_db_v1';
+function loadDB(){ try{ return JSON.parse(localStorage.getItem(DB_KEY)) || {users:{}}; }catch(e){ return {users:{}}; } }
+function saveDB(d){ try{ localStorage.setItem(DB_KEY, JSON.stringify(d)); }catch(e){} }
+let db = loadDB();
+let session = null;
+let viewingPhone='';
+
+function hash(s){ let h=0; for(let i=0;i<s.length;i++){ h=(h*31 + s.charCodeAt(i))>>>0; } return 'h'+h; }
+function genCode(){ const part=()=>Math.random().toString(36).slice(2,6).toUpperCase(); return [part(),part(),part(),part()].join('-'); }
+function nowISO(){ return new Date().toISOString(); }
+function fmtDate(iso){ if(!iso) return '—'; const d=new Date(iso); return d.toLocaleDateString()+' '+d.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}); }
+
+function audit(uid, text){
+  const u=db.users[uid]; if(!u) return;
+  u.audit = u.audit || [];
+  u.audit.unshift({text, at: nowISO()});
+  u.audit = u.audit.slice(0,30);
+  saveDB(db);
+}
+
+function go(view){
+  document.querySelectorAll('section').forEach(s=>s.classList.remove('active'));
+  const el = document.getElementById('view-'+view);
+  if(el) el.classList.add('active');
+  const loggedViews=['dashboard','contacts','deleted','security'];
+  document.getElementById('app-area').style.display = loggedViews.includes(view) ? 'block' : 'none';
+  document.querySelectorAll('.err').forEach(e=>e.textContent='');
+  if(view==='dashboard') renderDashboard();
+  if(view==='contacts') renderContacts();
+  if(view==='deleted') renderDeleted();
+  if(view==='security') renderSecurity();
+  renderNav(view);
+  window.scrollTo(0,0);
+}
+
+function renderNav(active){
+  const nav=document.getElementById('topNav'); const right=document.getElementById('headerRight');
+  nav.innerHTML=''; right.innerHTML='';
+  if(session){
+    const items=[['dashboard','Dashboard'],['contacts','Contacts'],['deleted','Deleted'],['security','Security']];
+    const allowed = session.type==='emergency' ? ['dashboard','contacts','deleted'] : items.map(i=>i[0]);
+    items.forEach(([v,label])=>{
+      if(!allowed.includes(v)) return;
+      const b=document.createElement('button'); b.textContent=label;
+      if(v===active) b.className='active';
+      b.onclick=()=>go(v); nav.appendChild(b);
+    });
+    const out=document.createElement('button'); out.className='btn small'; out.textContent='Log out'; out.onclick=logout;
+    right.appendChild(out);
+  } else {
+    const l=document.createElement('button'); l.className='btn small'; l.textContent='Sign in'; l.onclick=()=>go('login');
+    right.appendChild(l);
+  }
+}
+
+function doRegister(){
+  const name=val('r-name'), uid=val('r-uid'), mobile=val('r-mobile'), pass=val('r-pass'), pass2=val('r-pass2'), dob=val('r-dob');
+  const err=document.getElementById('r-err');
+  if(!name||!uid||!pass){ err.textContent='Fill in name, user ID and password.'; return; }
+  if(pass.length<6){ err.textContent='Password must be at least 6 characters.'; return; }
+  if(pass!==pass2){ err.textContent='Passwords do not match.'; return; }
+  if(db.users[uid]){ err.textContent='That user ID is already taken.'; return; }
+  const code=genCode();
+  db.users[uid]={ fullName:name, uid, mobile, dob, passHash:hash(pass), codeHash:hash(code), createdAt:nowISO(), lastSync:null, contacts:[], audit:[] };
+  saveDB(db);
+  audit(uid,'Account created');
+  document.getElementById('codeDisplay').textContent=code;
+  document.getElementById('codeModal').classList.add('show');
+  window._pendingLogin=uid;
+}
+function closeCodeModal(){
+  document.getElementById('codeModal').classList.remove('show');
+  if(window._pendingLogin){ startSession(window._pendingLogin,'normal'); window._pendingLogin=null; }
+}
+function doLogin(){
+  const uid=val('l-uid'), pass=val('l-pass'); const err=document.getElementById('l-err');
+  const u=db.users[uid];
+  if(!u || u.passHash!==hash(pass)){ err.textContent='Incorrect user ID or password.'; if(u) audit(uid,'Failed login attempt'); return; }
+  audit(uid,'Signed in');
+  startSession(uid,'normal');
+}
+function doEmergencyLogin(){
+  const uid=val('e-uid'), pass=val('e-pass'), code=val('e-code').toUpperCase(); const err=document.getElementById('e-err');
+  const u=db.users[uid];
+  if(!u || u.passHash!==hash(pass)){ err.textContent='Incorrect user ID or password.'; return; }
+  if(u.codeHash!==hash(code)){ err.textContent='Incorrect emergency recovery code.'; audit(uid,'Failed emergency login (bad code)'); return; }
+  audit(uid,'Emergency session started');
+  startSession(uid,'emergency');
+}
+function startSession(uid,type){
+  const durMin = type==='emergency' ? 10 : 30;
+  session = { uid, type, expiresAt: Date.now()+durMin*60000, lastActivity: Date.now() };
+  go('dashboard');
+  clearInterval(window._tick); window._tick=setInterval(tick,1000);
+  ['click','keydown','touchstart'].forEach(ev=>document.addEventListener(ev, ()=>{ if(session) session.lastActivity=Date.now(); }));
+}
+function logout(){
+  if(session) audit(session.uid, session.type==='emergency' ? 'Emergency session ended' : 'Signed out');
+  session=null; clearInterval(window._tick);
+  go('landing');
+}
+function tick(){
+  if(!session) return;
+  const left = session.expiresAt - Date.now();
+  const inactive = Date.now() - session.lastActivity;
+  const inactiveLimit = session.type==='emergency' ? 5*60000 : 15*60000;
+  if(left<=0 || inactive>inactiveLimit){ logout(); return; }
+  const b=document.getElementById('emgBanner');
+  if(session.type==='emergency' && b && document.getElementById('view-dashboard').classList.contains('active')){
+    const m=Math.floor(left/60000), s=Math.floor((left%60000)/1000);
+    b.innerHTML = `<div class="banner emg"><span><b>Emergency session active.</b> View &amp; call only — security settings are locked on this device.</span><span>Expires in ${m}:${String(s).padStart(2,'0')}</span></div>`;
+  }
+}
+function val(id){ return document.getElementById(id).value.trim(); }
+
+function renderDashboard(){
+  const u=db.users[session.uid];
+  document.getElementById('dashName').textContent=u.fullName;
+  const active=u.contacts.filter(c=>c.status==='ACTIVE').length;
+  const deleted=u.contacts.filter(c=>c.status==='DELETED').length;
+  document.getElementById('st-total').textContent=u.contacts.length;
+  document.getElementById('st-active').textContent=active;
+  document.getElementById('st-deleted').textContent=deleted;
+  document.getElementById('st-sync').textContent= u.lastSync ? fmtDate(u.lastSync) : 'Never';
+  document.getElementById('emgBanner').innerHTML='';
+  if(session.type==='emergency') tick();
+  document.getElementById('syncBtn').style.display = session.type==='emergency' ? 'none' : 'inline-flex';
+}
+function simulateSync(){
+  const u=db.users[session.uid]; u.lastSync=nowISO(); saveDB(db); audit(session.uid,'Manual sync completed');
+  renderDashboard();
+}
+
+function renderContacts(){
+  const u=db.users[session.uid];
+  const q=(document.getElementById('c-search')?.value||'').toLowerCase();
+  const body=document.getElementById('contactsBody');
+  const list=u.contacts.filter(c=>c.status==='ACTIVE' && (!q || [c.name,c.phone,c.email,c.company].join(' ').toLowerCase().includes(q)));
+  body.innerHTML='';
+  document.getElementById('contactsEmpty').style.display = list.length? 'none':'block';
+  document.getElementById('addBtn').style.display = session.type==='emergency' ? 'none':'inline-flex';
+  list.forEach(c=>{
+    const tr=document.createElement('tr');
+    tr.innerHTML = `<td>${esc(c.name)}</td><td>${esc(c.phone)}</td><td>${esc(c.email||'')}</td>
+      <td class="actions-cell">
+        <button class="btn small" onclick="viewContact('${c.id}')">View</button>
+        ${session.type!=='emergency' ? `<button class="btn small" onclick="openContactModal('${c.id}')">Edit</button><button class="btn small danger" onclick="deleteContact('${c.id}')">Delete</button>` : ''}
+      </td>`;
+    body.appendChild(tr);
+  });
+}
+function esc(s){ return (s||'').replace(/[<>&]/g, m=>({'<':'&lt;','>':'&gt;','&':'&amp;'}[m])); }
+function openContactModal(id){
+  document.getElementById('cm-err').textContent='';
+  if(id){
+    const c=db.users[session.uid].contacts.find(c=>c.id===id);
+    document.getElementById('cm-title').textContent='Edit contact';
+    document.getElementById('cm-id').value=id;
+    document.getElementById('cm-name').value=c.name;
+    document.getElementById('cm-phone').value=c.phone;
+    document.getElementById('cm-email').value=c.email||'';
+    document.getElementById('cm-company').value=c.company||'';
+  } else {
+    document.getElementById('cm-title').textContent='Add contact';
+    ['cm-id','cm-name','cm-phone','cm-email','cm-company'].forEach(f=>document.getElementById(f).value='');
+  }
+  document.getElementById('contactModal').classList.add('show');
+}
+function closeContactModal(){ document.getElementById('contactModal').classList.remove('show'); }
+function saveContact(){
+  const id=val('cm-id'), name=val('cm-name'), phone=val('cm-phone'), email=val('cm-email'), company=val('cm-company');
+  const err=document.getElementById('cm-err');
+  if(!name||!phone){ err.textContent='Name and phone are required.'; return; }
+  const u=db.users[session.uid];
+  if(id){
+    const c=u.contacts.find(c=>c.id===id);
+    Object.assign(c,{name,phone,email,company,updatedAt:nowISO()});
+    audit(session.uid,`Contact updated: ${name}`);
+  } else {
+    u.contacts.push({id:'c'+Date.now()+Math.random().toString(36).slice(2,6), name,phone,email,company,status:'ACTIVE',createdAt:nowISO(),updatedAt:nowISO(),deletedAt:null});
+    audit(session.uid,`Contact added: ${name}`);
+  }
+  u.lastSync=nowISO(); saveDB(db);
+  closeContactModal(); renderContacts();
+}
+function deleteContact(id){
+  const u=db.users[session.uid]; const c=u.contacts.find(c=>c.id===id);
+  c.status='DELETED'; c.deletedAt=nowISO();
+  u.lastSync=nowISO(); saveDB(db);
+  audit(session.uid,`Contact deleted: ${c.name}`);
+  renderContacts();
+}
+function restoreContact(id){
+  const u=db.users[session.uid]; const c=u.contacts.find(c=>c.id===id);
+  c.status='ACTIVE'; c.deletedAt=null;
+  u.lastSync=nowISO(); saveDB(db);
+  audit(session.uid,`Contact restored: ${c.name}`);
+  renderDeleted();
+}
+function renderDeleted(){
+  const u=db.users[session.uid];
+  const list=u.contacts.filter(c=>c.status==='DELETED');
+  const body=document.getElementById('deletedBody'); body.innerHTML='';
+  document.getElementById('deletedEmpty').style.display=list.length?'none':'block';
+  list.forEach(c=>{
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td>${esc(c.name)}</td><td>${esc(c.phone)}</td><td>${fmtDate(c.deletedAt)}</td>
+      <td><button class="btn small gold" onclick="restoreContact('${c.id}')">Restore</button></td>`;
+    body.appendChild(tr);
+  });
+}
+function viewContact(id){
+  const c=db.users[session.uid].contacts.find(c=>c.id===id);
+  viewingPhone=c.phone;
+  document.getElementById('vm-name').textContent=c.name;
+  document.getElementById('vm-detail').innerHTML = `${esc(c.phone)}<br>${esc(c.email||'')}<br>${esc(c.company||'')}`;
+  document.getElementById('vm-call').href='tel:'+c.phone;
+  document.getElementById('viewModal').classList.add('show');
+}
+function closeViewModal(){ document.getElementById('viewModal').classList.remove('show'); }
+function copyNumber(){
+  if(navigator.clipboard){ navigator.clipboard.writeText(viewingPhone).catch(()=>{}); }
+}
+
+function renderSecurity(){
+  const u=db.users[session.uid];
+  const left=Math.max(0,session.expiresAt-Date.now());
+  const m=Math.floor(left/60000), s=Math.floor((left%60000)/1000);
+  document.getElementById('sessList').innerHTML = `
+    <div class="sessrow"><div><b>This device</b><div class="d">${session.type==='emergency'?'Emergency session':'Normal session'} · active now</div></div>
+    <div style="display:flex;align-items:center;gap:10px"><span class="d">expires in ${m}:${String(s).padStart(2,'0')}</span><button class="btn small danger" onclick="logout()">Revoke</button></div></div>`;
+  document.getElementById('auditList').innerHTML = (u.audit||[]).slice(0,12).map(a=>`<div style="padding:8px 0;border-bottom:1px solid var(--line)">${esc(a.text)} <span style="float:right">${fmtDate(a.at)}</span></div>`).join('') || '<p>No activity yet.</p>';
+}
+
+go('landing');
+</script>
+</body>
+</html>
